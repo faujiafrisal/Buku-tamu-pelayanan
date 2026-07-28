@@ -1,0 +1,965 @@
+<!DOCTYPE html>
+<html lang="id" class="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mal Pelayanan Publik (MPP) Kota Samarinda - Presensi & Portal Layanan</title>
+    
+    <!-- External Dependencies: Tailwind CSS & FontAwesome Icons -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Typography: Plus Jakarta Sans -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+                    },
+                    colors: {
+                        samarinda: {
+                            50: '#f0f7ff',
+                            100: '#e0effe',
+                            500: '#0284c7',
+                            800: '#075985',
+                            900: '#0c4a6e',
+                            gold: '#f59e0b',
+                            goldHover: '#d97706'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Glassmorphism Cards */
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.94);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+        }
+        .dark .glass-panel {
+            background: rgba(15, 23, 42, 0.90);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+        }
+
+        /* Samarinda Government Civic Background */
+        .civic-bg {
+            background-color: #0f172a;
+            background-image: 
+                radial-gradient(at 0% 0%, rgba(2, 132, 199, 0.22) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(245, 158, 11, 0.18) 0px, transparent 50%),
+                linear-gradient(to bottom, rgba(15, 23, 42, 0.88), rgba(15, 23, 42, 0.96)),
+                url('https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=1920&auto=format&fit=crop');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+        }
+
+        /* Modern Custom Range Input Slider */
+        input[type=range] {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 100%;
+            height: 10px;
+            border-radius: 9999px;
+            background: #cbd5e1;
+            outline: none;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .dark input[type=range] {
+            background: #334155;
+        }
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            background: #075985;
+            cursor: grab;
+            box-shadow: 0 4px 14px rgba(7, 89, 133, 0.4);
+            border: 3px solid #f59e0b;
+            transition: transform 0.15s ease, background-color 0.15s ease;
+        }
+        input[type=range]::-webkit-slider-thumb:active {
+            cursor: grabbing;
+            transform: scale(1.2);
+        }
+        .dark input[type=range]::-webkit-slider-thumb {
+            background: #0284c7;
+            border-color: #f59e0b;
+        }
+
+        /* Toast Notifications */
+        @keyframes slideInRight {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        @keyframes fadeOut {
+            from { opacity: 1; }
+            to { opacity: 0; }
+        }
+        .toast-enter {
+            animation: slideInRight 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+        .toast-exit {
+            animation: fadeOut 0.3s ease forwards;
+        }
+    </style>
+</head>
+
+<body class="civic-bg text-slate-800 dark:text-slate-100 font-sans min-h-screen flex flex-col justify-between items-center p-3 sm:p-6 selection:bg-sky-600 selection:text-white">
+
+    <!-- TOP NAVIGATION HEADER -->
+    <header class="w-full max-w-4xl glass-panel rounded-2xl border border-slate-200/80 dark:border-slate-800/80 shadow-lg p-3 sm:p-4 mb-6 transition-all">
+        <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
+            
+            <!-- Brand Badge -->
+            <div class="flex items-center gap-3">
+                <div class="w-12 h-12 rounded-xl bg-gradient-to-tr from-sky-900 to-sky-700 flex items-center justify-center text-amber-400 font-black text-xl shadow-md border border-amber-500/30 shrink-0">
+                    <i class="fa-solid fa-building-columns"></i>
+                </div>
+                <div>
+                    <div class="flex items-center gap-2">
+                        <span class="text-[10px] font-extrabold uppercase tracking-wider bg-amber-500/10 text-amber-600 dark:text-amber-400 px-2 py-0.5 rounded-md border border-amber-500/20">Portal Resmi</span>
+                        <span class="text-[10px] font-semibold text-slate-400">&bull; Samarinda City</span>
+                    </div>
+                    <h1 class="font-extrabold text-base sm:text-lg text-slate-900 dark:text-white leading-tight">
+                        Mal Pelayanan Publik (MPP)
+                    </h1>
+                </div>
+            </div>
+
+            <!-- Right Controls: WITA Clock & Theme Switcher -->
+            <div class="flex items-center gap-3 w-full sm:w-auto justify-between sm:justify-end border-t sm:border-t-0 border-slate-200 dark:border-slate-800 pt-2 sm:pt-0">
+                <div class="text-right">
+                    <p class="text-[10px] uppercase tracking-wider text-slate-400 font-bold">Waktu Sekarang</p>
+                    <p id="liveClock" class="font-mono text-xs sm:text-sm text-sky-700 dark:text-sky-400 font-bold">00:00:00 WITA</p>
+                </div>
+
+                <button id="themeToggleBtn" title="Ganti Mode Tampilan" class="p-2.5 rounded-xl bg-slate-100 dark:bg-slate-800/90 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-700 transition-all shadow-sm text-xs cursor-pointer">
+                    <i id="themeIcon" class="fa-solid fa-moon text-amber-500"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Navigation Tabs -->
+        <nav class="flex items-center gap-2 pt-3 mt-3 border-t border-slate-200 dark:border-slate-800 overflow-x-auto text-xs font-bold scrollbar-none">
+            <button id="tabBukuTamu" onclick="switchTab('buku-tamu')" class="nav-tab active flex items-center gap-2 px-4 py-2.5 rounded-xl bg-sky-900 text-amber-400 shadow-md transition-all cursor-pointer whitespace-nowrap">
+                <i class="fa-solid fa-file-pen"></i>
+                <span>Buku Tamu Digital</span>
+            </button>
+            <button id="tabKatalogTenan" onclick="switchTab('katalog-tenan')" class="nav-tab flex items-center gap-2 px-4 py-2.5 rounded-xl text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-all cursor-pointer whitespace-nowrap">
+                <i class="fa-solid fa-list-check"></i>
+                <span>Direktori Tenan & Layanan (30+)</span>
+            </button>
+            <button id="tabInfoJadwal" onclick="switchTab('info-jadwal')" class="nav-tab flex items-center gap-2 px-4 py-2.5 rounded-xl text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-all cursor-pointer whitespace-nowrap">
+                <i class="fa-solid fa-clock-rotate-left"></i>
+                <span>Jam Layanan & Lokasi</span>
+            </button>
+        </nav>
+    </header>
+
+    <!-- Background Hidden Iframe for Google Form Submission -->
+    <iframe name="hidden_iframe" id="hidden_iframe" style="display:none;"></iframe>
+
+    <!-- MAIN CONTAINER -->
+    <main class="w-full max-w-4xl space-y-6">
+
+        <!-- ================================================================= -->
+        <!-- TAB SECTION 1: BUKU TAMU DIGITAL FORM                            -->
+        <!-- ================================================================= -->
+        <section id="viewBukuTamu" class="glass-panel rounded-3xl border border-slate-200/80 dark:border-slate-800/80 shadow-2xl p-5 sm:p-8 relative overflow-hidden transition-all">
+            
+            <!-- Top Gold Decorative Line -->
+            <div class="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-sky-900 via-amber-500 to-sky-900"></div>
+
+            <!-- Form Header Title -->
+            <div class="mb-6 pb-4 border-b border-slate-200 dark:border-slate-800">
+                <div class="flex items-center gap-2 text-sky-700 dark:text-sky-400 font-bold text-xs uppercase tracking-wider mb-1">
+                    <i class="fa-solid fa-clipboard-user"></i>
+                    <span>Sistem Informasi Presensi Pengunjung</span>
+                </div>
+                <h2 class="text-xl sm:text-2xl font-extrabold text-slate-900 dark:text-white tracking-tight">
+                Formulir Buku Tamu Mal Pelayanan Publik (MPP) Kota Samarinda
+                </h2>
+                <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">
+                   Selamat datang di Mal Pelayanan Publik Kota Samarinda. Silakan isi formulir kunjungan Anda di bawah ini.
+                </p>
+            </div>
+
+            <!-- GOOGLE FORM -->
+            <form id="googleForm" action="https://docs.google.com/forms/d/e/1FAIpQLScebUCftxn4vliVoZidtIulUyNgzQXVlWbS3zEmAhtPedn1Hw/formResponse" method="POST" target="hidden_iframe" class="space-y-5">
+                
+                <!-- SECTION 1: IDENTITAS DIRI -->
+                <div class="p-4 sm:p-5 rounded-2xl bg-slate-50/80 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 space-y-4">
+                    <div class="flex items-center gap-2 border-b border-slate-200 dark:border-slate-800 pb-2.5">
+                        <span class="w-6 h-6 rounded-full bg-sky-900 text-amber-400 flex items-center justify-center text-xs font-black">1</span>
+                        <h3 class="text-xs font-extrabold uppercase tracking-wider text-slate-800 dark:text-slate-200">Identitas Pengunjung</h3>
+                    </div>
+
+                    <!-- Nama Lengkap Field (entry.1354168083) -->
+                    <div class="space-y-1.5">
+                        <label for="namaInput" class="flex items-center justify-between text-xs font-bold text-slate-700 dark:text-slate-300">
+                            <span>Nama Lengkap Pengunjung <span class="text-rose-500">*</span></span>
+                        </label>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                                <i class="fa-solid fa-id-card text-sm"></i>
+                            </div>
+                            <input type="text" id="namaInput" name="entry.1354168083" required placeholder="Masukkan nama sesuai KTP..."
+                                class="w-full pl-10 pr-4 py-3 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-sky-700 focus:border-transparent transition-all shadow-sm text-sm font-medium">
+                        </div>
+                    </div>
+
+                    <!-- Jenis Kelamin Field (entry.725234574) -->
+                    <div class="space-y-1.5">
+                        <label class="flex items-center justify-between text-xs font-bold text-slate-700 dark:text-slate-300">
+                            <span>Jenis Kelamin <span class="text-rose-500">*</span></span>
+                        </label>
+                        <input type="hidden" id="jkInput" name="entry.725234574" value="Laki-Laki">
+                        <div class="grid grid-cols-2 gap-3" id="jkGroup">
+                            <button type="button" data-value="Laki-Laki" class="jk-btn active flex items-center justify-center gap-2.5 py-3 px-4 rounded-xl border-2 border-sky-800 bg-sky-50 dark:bg-sky-950/80 text-sky-900 dark:text-sky-300 font-bold text-xs sm:text-sm transition-all shadow-sm cursor-pointer">
+                                <i class="fa-solid fa-mars text-sky-600 dark:text-sky-400 text-base"></i> Laki-Laki
+                            </button>
+                            <button type="button" data-value="Perempuan" class="jk-btn flex items-center justify-center gap-2.5 py-3 px-4 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-400 font-medium text-xs sm:text-sm transition-all shadow-sm cursor-pointer">
+                                <i class="fa-solid fa-venus text-pink-500 text-base"></i> Perempuan
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SECTION 2: DETAIL KUNJUNGAN & SLIDER USIA -->
+                <div class="p-4 sm:p-5 rounded-2xl bg-slate-50/80 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 space-y-4">
+                    <div class="flex items-center gap-2 border-b border-slate-200 dark:border-slate-800 pb-2.5">
+                        <span class="w-6 h-6 rounded-full bg-sky-900 text-amber-400 flex items-center justify-center text-xs font-black">2</span>
+                        <h3 class="text-xs font-extrabold uppercase tracking-wider text-slate-800 dark:text-slate-200">Detail Kunjungan</h3>
+                    </div>
+
+                    <!-- Usia Interactive Slide Field (entry.1449091762) -->
+                    <div class="space-y-3">
+                        <div class="flex justify-between items-center">
+                            <label for="usiaSlider" class="text-xs font-bold text-slate-700 dark:text-slate-300 flex items-center gap-2">
+                                <i class="fa-solid fa-sliders text-sky-600 dark:text-sky-400"></i>
+                                <span>Usia Anda (Geser Slider) <span class="text-rose-500">*</span></span>
+                            </label>
+                            <div class="flex items-center gap-1.5">
+                                <span id="usiaBadge" class="px-3.5 py-1 bg-sky-900 text-amber-400 font-extrabold text-sm sm:text-base rounded-xl border border-amber-500/40 shadow-sm transition-transform active:scale-110">
+                                    25
+                                </span>
+                                <span class="text-xs text-slate-600 dark:text-slate-400 font-semibold">Tahun</span>
+                            </div>
+                        </div>
+                        
+                        <div class="pt-2 pb-1 relative">
+                            <input type="range" id="usiaSlider" min="15" max="80" value="25" step="1">
+                            <input type="hidden" id="usiaHiddenInput" name="entry.1449091762" value="25">
+                        </div>
+                        
+                        <div class="flex justify-between text-[11px] font-semibold text-slate-400 dark:text-slate-500 px-1">
+                            <span>15 Thn</span>
+                            <span>30 Thn</span>
+                            <span>50 Thn</span>
+                            <span>80+ Thn</span>
+                        </div>
+
+                        <!-- Quick Age Select Pills -->
+                        <div class="flex flex-wrap gap-2 pt-1">
+                            <span class="text-[11px] font-medium text-slate-400 flex items-center">Pilih Cepat:</span>
+                            <button type="button" onclick="setAgePreset(18)" class="px-2.5 py-1 text-xs rounded-lg border border-slate-300 dark:border-slate-700 hover:bg-sky-50 dark:hover:bg-sky-950 font-semibold text-slate-600 dark:text-slate-300 cursor-pointer transition-colors">18</button>
+                            <button type="button" onclick="setAgePreset(25)" class="px-2.5 py-1 text-xs rounded-lg border border-slate-300 dark:border-slate-700 hover:bg-sky-50 dark:hover:bg-sky-950 font-semibold text-slate-600 dark:text-slate-300 cursor-pointer transition-colors">25</button>
+                            <button type="button" onclick="setAgePreset(35)" class="px-2.5 py-1 text-xs rounded-lg border border-slate-300 dark:border-slate-700 hover:bg-sky-50 dark:hover:bg-sky-950 font-semibold text-slate-600 dark:text-slate-300 cursor-pointer transition-colors">35</button>
+                            <button type="button" onclick="setAgePreset(50)" class="px-2.5 py-1 text-xs rounded-lg border border-slate-300 dark:border-slate-700 hover:bg-sky-50 dark:hover:bg-sky-950 font-semibold text-slate-600 dark:text-slate-300 cursor-pointer transition-colors">50</button>
+                        </div>
+                    </div>
+
+                    <!-- Jumlah Rombongan Field (entry.1095579232) -->
+                    <div class="space-y-2 pt-2 border-t border-slate-200/60 dark:border-slate-800/60">
+                        <label class="flex items-center justify-between text-xs font-bold text-slate-700 dark:text-slate-300">
+                            <span>Jumlah Anggota Rombongan <span class="text-rose-500">*</span></span>
+                        </label>
+
+                        <input type="hidden" id="jumlahOrangInput" name="entry.1095579232" value="1 orang">
+
+                        <div class="grid grid-cols-2 sm:grid-cols-3 gap-2.5" id="pillGroup">
+                            <button type="button" data-value="1 orang" class="pill-btn active flex items-center justify-center gap-2 py-3 px-3 rounded-xl border-2 border-sky-800 bg-sky-50 dark:bg-sky-950/80 text-sky-900 dark:text-sky-300 font-bold text-xs sm:text-sm transition-all shadow-sm cursor-pointer">
+                                <i class="fa-solid fa-user text-xs"></i> 1 orang
+                            </button>
+                            <button type="button" data-value="2 orang" class="pill-btn flex items-center justify-center gap-2 py-3 px-3 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-400 font-medium text-xs sm:text-sm transition-all shadow-sm cursor-pointer">
+                                <i class="fa-solid fa-user-group text-xs"></i> 2 orang
+                            </button>
+                            <button type="button" data-value="3 orang" class="pill-btn flex items-center justify-center gap-2 py-3 px-3 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-400 font-medium text-xs sm:text-sm transition-all shadow-sm cursor-pointer">
+                                <i class="fa-solid fa-users text-xs"></i> 3 orang
+                            </button>
+                            <button type="button" data-value="4 orang" class="pill-btn flex items-center justify-center gap-2 py-3 px-3 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-400 font-medium text-xs sm:text-sm transition-all shadow-sm cursor-pointer">
+                                <i class="fa-solid fa-users-rectangle text-xs"></i> 4 orang
+                            </button>
+                            <button type="button" data-value="5-10 orang" class="pill-btn col-span-2 sm:col-span-1 flex items-center justify-center gap-2 py-3 px-3 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-400 font-medium text-xs sm:text-sm transition-all shadow-sm cursor-pointer">
+                                <i class="fa-solid fa-people-group text-xs"></i> 5-10 orang
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Keperluan / Layanan Field (entry.1266931957) -->
+                    <div class="space-y-1.5 pt-2 border-t border-slate-200/60 dark:border-slate-800/60">
+                        <label for="keperluanInput" class="flex items-center justify-between text-xs font-bold text-slate-700 dark:text-slate-300">
+                            <span>Keperluan / Instansi Tujuan <span class="text-rose-500">*</span></span>
+                            <button type="button" onclick="switchTab('katalog-tenan')" class="text-[11px] text-sky-600 dark:text-sky-400 hover:underline">
+                                Lihat Semua Tenan MPP &rarr;
+                            </button>
+                        </label>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                                <i class="fa-solid fa-hand-holding-hand text-sm"></i>
+                            </div>
+                            <select id="keperluanInput" name="entry.1266931957" required
+                                class="w-full pl-10 pr-8 py-3 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-sky-700 focus:border-transparent transition-all shadow-sm text-sm font-medium appearance-none cursor-pointer">
+                                <option value="" disabled selected>Pilih Instansi / Keperluan Kunjungan...</option>
+                                
+                                <optgroup label="🏛️ OPD Pemerintah Kota Samarinda">
+                                    <option value="DPMPTSP Kota Samarinda (OSS & Perizinan)">DPMPTSP (OSS, Perizinan Usaha & Reklame)</option>
+                                    <option value="Dinas Kependudukan & Pencatatan Sipil (Disdukcapil)">Disdukcapil (KTP-el, KK, Akta Kelahiran/Kematian)</option>
+                                    <option value="Dinas Lingkungan Hidup (DLH)">Dinas Lingkungan Hidup (DLH)</option>
+                                    <option value="Dinas PUPR & Pertanahan">Dinas PUPR & Pertanahan</option>
+                                    <option value="Dinas Perumahan & Permukiman (Disperkim)">Dinas Perumahan & Permukiman (Disperkim)</option>
+                                    <option value="Dinas Koperasi, UKM & Perindustrian">Dinas Koperasi, UKM & Perindustrian</option>
+                                    <option value="Dinas Perdagangan Kota Samarinda">Dinas Perdagangan</option>
+                                    <option value="Dinas Kesehatan Kota Samarinda">Dinas Kesehatan</option>
+                                    <option value="Dinas Pemuda, Olahraga & Pariwisata (Disporapar)">Dinas Pemuda, Olahraga & Pariwisata (Disporapar)</option>
+                                    <option value="Dinas Perpustakaan & Kearsipan">Dinas Perpustakaan & Kearsipan</option>
+                                    <option value="Dinas PPPA Samarinda">Dinas Pemberdayaan Perempuan & Perlindungan Anak</option>
+                                    <option value="Unit Kerja Pengadaan Barang/Jasa (UKPBJ)">Unit Kerja Pengadaan Barang & Jasa (UKPBJ)</option>
+                                </optgroup>
+
+                                <optgroup label="🦅 Instansi Vertikal / Kementerian / Lembaga / Kepolisian">
+                                    <option value="Polresta Samarinda (SIM & SKCK)">Polresta Samarinda (SKCK & SIM)</option>
+                                    <option value="Kantor Imigrasi Kelas I TPI Samarinda">Kantor Imigrasi (Pengurusan Paspor)</option>
+                                    <option value="KPP Pratama Samarinda (Pajak DJP)">KPP Pratama (Pajak, EFIN, NPWP & SPT)</option>
+                                    <option value="Samsat / Bapenda Prov. Kaltim">Samsat / Bapenda Kaltim (Pajak Kendaraan & STNK)</option>
+                                    <option value="BPOM di Samarinda">Badan Pengawas Obat dan Makanan (BPOM)</option>
+                                    <option value="BAZNAS Kota Samarinda">BAZNAS Kota Samarinda</option>
+                                </optgroup>
+
+                                <optgroup label="💼 BUMN & BUMD">
+                                    <option value="BPJS Kesehatan">BPJS Kesehatan</option>
+                                    <option value="BPJS Ketenagakerjaan">BPJS Ketenagakerjaan</option>
+                                    <option value="Perumdam Tirta Kencana (PDAM)">Perumdam Tirta Kencana (PDAM Samarinda)</option>
+                                    <option value="PT Bank Kaltimtara">PT Bank Kaltimtara</option>
+                                    <option value="PT Pos Indonesia">PT Pos Indonesia</option>
+                                </optgroup>
+
+                                <optgroup label="📋 Keperluan Umum / Tamu Dinas">
+                                    <option value="Kunjungan Kerja / Audiensi Resmi">Kunjungan Kerja / Audiensi Resmi Dinas</option>
+                                    <option value="Konsultasi & Informasi Layanan Umum">Konsultasi & Informasi Layanan Umum</option>
+                                    <option value="Penyerahan / Pengambilan Berkas Document">Penyerahan / Pengambilan Berkas Dokumen</option>
+                                    <option value="Layanan Lainnya">Layanan Lainnya</option>
+                                </optgroup>
+                            </select>
+                            <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none text-slate-400">
+                                <i class="fa-solid fa-chevron-down text-xs"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SECTION 3: KONTAK -->
+                <div class="p-4 sm:p-5 rounded-2xl bg-slate-50/80 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 space-y-3">
+                    <div class="flex items-center gap-2 border-b border-slate-200 dark:border-slate-800 pb-2.5">
+                        <span class="w-6 h-6 rounded-full bg-sky-900 text-amber-400 flex items-center justify-center text-xs font-black">3</span>
+                        <h3 class="text-xs font-extrabold uppercase tracking-wider text-slate-800 dark:text-slate-200">Kontak WhatsApp</h3>
+                    </div>
+
+                    <!-- Kontak WhatsApp Field (entry.1724474162) -->
+                    <div class="space-y-1.5">
+                        <label for="kontakInput" class="flex items-center justify-between text-xs font-bold text-slate-700 dark:text-slate-300">
+                            <span>Nomor WhatsApp Aktif <span class="text-rose-500">*</span></span>
+                            <span class="text-[10px] text-emerald-600 dark:text-emerald-400 font-medium flex items-center gap-1">
+                                <i class="fa-brands fa-whatsapp"></i> Notifikasi Layanan
+                            </span>
+                        </label>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                                <i class="fa-solid fa-phone text-sm"></i>
+                            </div>
+                            <input type="tel" id="kontakInput" name="entry.1724474162" required placeholder="Contoh: 081256626536"
+                                class="w-full pl-10 pr-4 py-3 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-sky-700 focus:border-transparent transition-all shadow-sm text-sm font-medium">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SUBMIT BUTTON -->
+                <div class="pt-2">
+                    <button type="submit" id="submitBtn" class="w-full py-4 px-6 rounded-2xl bg-gradient-to-r from-sky-900 via-indigo-900 to-sky-950 hover:from-sky-800 hover:to-indigo-800 text-amber-400 font-extrabold text-base border border-amber-500/40 shadow-xl shadow-sky-950/20 active:scale-[0.99] transition-all flex items-center justify-center space-x-3 group cursor-pointer">
+                        <i class="fa-solid fa-paper-plane text-amber-400 group-hover:scale-110 transition-transform text-sm"></i>
+                        <span>KIRIM DATA PRESENSI</span>
+                        <i class="fa-solid fa-arrow-right text-xs text-amber-400 group-hover:translate-x-1 transition-transform"></i>
+                    </button>
+                </div>
+                
+                <p class="text-center text-xs text-slate-500 dark:text-slate-400 pt-1 flex items-center justify-center gap-1.5">
+                    <i class="fa-solid fa-shield-halved text-emerald-600 dark:text-emerald-400"></i> Terintegrasi langsung dengan Google Form Database MPP Samarinda
+                </p>
+            </form>
+        </section>
+
+
+        <!-- ================================================================= -->
+        <!-- TAB SECTION 2: KATALOG TENAN & INSTANSI DIRECTORY               -->
+        <!-- ================================================================= -->
+        <section id="viewKatalogTenan" class="hidden glass-panel rounded-3xl border border-slate-200/80 dark:border-slate-800/80 shadow-2xl p-5 sm:p-8 transition-all space-y-6">
+            
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-200 dark:border-slate-800">
+                <div>
+                    <h2 class="text-xl font-extrabold text-slate-900 dark:text-white flex items-center gap-2">
+                        <i class="fa-solid fa-store text-sky-600"></i>
+                        <span>Direktori Tenan & Instansi MPP Samarinda</span>
+                    </h2>
+                    <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+                        Lebih dari 30 instansi pemerintah, BUMN, BUMD, dan layanan publik terpadu dalam satu gedung.
+                    </p>
+                </div>
+
+                <!-- Search Input -->
+                <div class="relative w-full sm:w-64">
+                    <input type="text" id="searchTenan" onkeyup="filterTenan()" placeholder="Cari nama instansi..." 
+                        class="w-full pl-9 pr-3 py-2 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-xs font-medium text-slate-800 dark:text-white focus:ring-2 focus:ring-sky-600 focus:outline-none">
+                    <i class="fa-solid fa-magnifying-glass absolute left-3 top-2.5 text-xs text-slate-400"></i>
+                </div>
+            </div>
+
+            <!-- Tenant Grid -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5" id="tenantGrid">
+                
+                <!-- Tenant Card Items -->
+                <div class="tenant-item p-4 rounded-2xl bg-white dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-md transition-all">
+                    <div class="flex items-start justify-between gap-2 mb-2">
+                        <span class="w-8 h-8 rounded-xl bg-sky-100 dark:bg-sky-950 text-sky-700 dark:text-sky-300 flex items-center justify-center font-bold text-xs shrink-0">01</span>
+                        <span class="text-[10px] font-bold uppercase tracking-wider text-emerald-600 bg-emerald-50 dark:bg-emerald-950/60 px-2 py-0.5 rounded">Pemkot</span>
+                    </div>
+                    <h4 class="font-bold text-xs sm:text-sm text-slate-900 dark:text-white tenant-name">DPMPTSP Kota Samarinda</h4>
+                    <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-1 line-clamp-2">Perizinan Usaha OSS, Non-Perizinan, SIPO Reklame & Konsultasi Investasi.</p>
+                    <button onclick="selectKeperluanAndGo('DPMPTSP Kota Samarinda (OSS & Perizinan)')" class="mt-3 w-full py-1.5 px-3 rounded-lg bg-sky-50 dark:bg-sky-950/70 hover:bg-sky-100 dark:hover:bg-sky-900 text-sky-800 dark:text-sky-300 font-bold text-[11px] flex items-center justify-center gap-1 transition-colors cursor-pointer">
+                        <span>Pilih Layanan Ini</span> &rarr;
+                    </button>
+                </div>
+
+                <div class="tenant-item p-4 rounded-2xl bg-white dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-md transition-all">
+                    <div class="flex items-start justify-between gap-2 mb-2">
+                        <span class="w-8 h-8 rounded-xl bg-sky-100 dark:bg-sky-950 text-sky-700 dark:text-sky-300 flex items-center justify-center font-bold text-xs shrink-0">02</span>
+                        <span class="text-[10px] font-bold uppercase tracking-wider text-emerald-600 bg-emerald-50 dark:bg-emerald-950/60 px-2 py-0.5 rounded">Pemkot</span>
+                    </div>
+                    <h4 class="font-bold text-xs sm:text-sm text-slate-900 dark:text-white tenant-name">Disdukcapil Samarinda</h4>
+                    <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-1 line-clamp-2">KTP-el, Kartu Keluarga, Akta Kelahiran, KIA, & Konsultasi Adminduk.</p>
+                    <button onclick="selectKeperluanAndGo('Dinas Kependudukan & Pencatatan Sipil (Disdukcapil)')" class="mt-3 w-full py-1.5 px-3 rounded-lg bg-sky-50 dark:bg-sky-950/70 hover:bg-sky-100 dark:hover:bg-sky-900 text-sky-800 dark:text-sky-300 font-bold text-[11px] flex items-center justify-center gap-1 transition-colors cursor-pointer">
+                        <span>Pilih Layanan Ini</span> &rarr;
+                    </button>
+                </div>
+
+                <div class="tenant-item p-4 rounded-2xl bg-white dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-md transition-all">
+                    <div class="flex items-start justify-between gap-2 mb-2">
+                        <span class="w-8 h-8 rounded-xl bg-sky-100 dark:bg-sky-950 text-sky-700 dark:text-sky-300 flex items-center justify-center font-bold text-xs shrink-0">03</span>
+                        <span class="text-[10px] font-bold uppercase tracking-wider text-blue-600 bg-blue-50 dark:bg-blue-950/60 px-2 py-0.5 rounded">Polri</span>
+                    </div>
+                    <h4 class="font-bold text-xs sm:text-sm text-slate-900 dark:text-white tenant-name">Polresta Samarinda</h4>
+                    <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-1 line-clamp-2">Layanan Penerbitan SKCK Baru/Perpanjangan & SIM.</p>
+                    <button onclick="selectKeperluanAndGo('Polresta Samarinda (SIM & SKCK)')" class="mt-3 w-full py-1.5 px-3 rounded-lg bg-sky-50 dark:bg-sky-950/70 hover:bg-sky-100 dark:hover:bg-sky-900 text-sky-800 dark:text-sky-300 font-bold text-[11px] flex items-center justify-center gap-1 transition-colors cursor-pointer">
+                        <span>Pilih Layanan Ini</span> &rarr;
+                    </button>
+                </div>
+
+                <div class="tenant-item p-4 rounded-2xl bg-white dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-md transition-all">
+                    <div class="flex items-start justify-between gap-2 mb-2">
+                        <span class="w-8 h-8 rounded-xl bg-sky-100 dark:bg-sky-950 text-sky-700 dark:text-sky-300 flex items-center justify-center font-bold text-xs shrink-0">04</span>
+                        <span class="text-[10px] font-bold uppercase tracking-wider text-purple-600 bg-purple-50 dark:bg-purple-950/60 px-2 py-0.5 rounded">Pemprov</span>
+                    </div>
+                    <h4 class="font-bold text-xs sm:text-sm text-slate-900 dark:text-white tenant-name">Samsat & Bapenda Kaltim</h4>
+                    <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-1 line-clamp-2">Pengesahan STNK Tahunan, Pembayaran Pajak Kendaraan Bermotor (PKB).</p>
+                    <button onclick="selectKeperluanAndGo('Samsat / Bapenda Prov. Kaltim')" class="mt-3 w-full py-1.5 px-3 rounded-lg bg-sky-50 dark:bg-sky-950/70 hover:bg-sky-100 dark:hover:bg-sky-900 text-sky-800 dark:text-sky-300 font-bold text-[11px] flex items-center justify-center gap-1 transition-colors cursor-pointer">
+                        <span>Pilih Layanan Ini</span> &rarr;
+                    </button>
+                </div>
+
+                <div class="tenant-item p-4 rounded-2xl bg-white dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-md transition-all">
+                    <div class="flex items-start justify-between gap-2 mb-2">
+                        <span class="w-8 h-8 rounded-xl bg-sky-100 dark:bg-sky-950 text-sky-700 dark:text-sky-300 flex items-center justify-center font-bold text-xs shrink-0">05</span>
+                        <span class="text-[10px] font-bold uppercase tracking-wider text-indigo-600 bg-indigo-50 dark:bg-indigo-950/60 px-2 py-0.5 rounded">Kementerian</span>
+                    </div>
+                    <h4 class="font-bold text-xs sm:text-sm text-slate-900 dark:text-white tenant-name">Kantor Imigrasi Kelas I Samarinda</h4>
+                    <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-1 line-clamp-2">Pengurusan Paspor Baru, Penggantian Paspor & Informasi Keimigrasian.</p>
+                    <button onclick="selectKeperluanAndGo('Kantor Imigrasi Kelas I TPI Samarinda')" class="mt-3 w-full py-1.5 px-3 rounded-lg bg-sky-50 dark:bg-sky-950/70 hover:bg-sky-100 dark:hover:bg-sky-900 text-sky-800 dark:text-sky-300 font-bold text-[11px] flex items-center justify-center gap-1 transition-colors cursor-pointer">
+                        <span>Pilih Layanan Ini</span> &rarr;
+                    </button>
+                </div>
+
+                <div class="tenant-item p-4 rounded-2xl bg-white dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-md transition-all">
+                    <div class="flex items-start justify-between gap-2 mb-2">
+                        <span class="w-8 h-8 rounded-xl bg-sky-100 dark:bg-sky-950 text-sky-700 dark:text-sky-300 flex items-center justify-center font-bold text-xs shrink-0">06</span>
+                        <span class="text-[10px] font-bold uppercase tracking-wider text-indigo-600 bg-indigo-50 dark:bg-indigo-950/60 px-2 py-0.5 rounded">Kementerian</span>
+                    </div>
+                    <h4 class="font-bold text-xs sm:text-sm text-slate-900 dark:text-white tenant-name">KPP Pratama Samarinda</h4>
+                    <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-1 line-clamp-2">EFIN, NPWP, Asistensi SPT Tahunan, Kode Billing & Konsultasi Pajak.</p>
+                    <button onclick="selectKeperluanAndGo('KPP Pratama Samarinda (Pajak DJP)')" class="mt-3 w-full py-1.5 px-3 rounded-lg bg-sky-50 dark:bg-sky-950/70 hover:bg-sky-100 dark:hover:bg-sky-900 text-sky-800 dark:text-sky-300 font-bold text-[11px] flex items-center justify-center gap-1 transition-colors cursor-pointer">
+                        <span>Pilih Layanan Ini</span> &rarr;
+                    </button>
+                </div>
+
+                <div class="tenant-item p-4 rounded-2xl bg-white dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-md transition-all">
+                    <div class="flex items-start justify-between gap-2 mb-2">
+                        <span class="w-8 h-8 rounded-xl bg-sky-100 dark:bg-sky-950 text-sky-700 dark:text-sky-300 flex items-center justify-center font-bold text-xs shrink-0">07</span>
+                        <span class="text-[10px] font-bold uppercase tracking-wider text-amber-600 bg-amber-50 dark:bg-amber-950/60 px-2 py-0.5 rounded">BUMN/BUMD</span>
+                    </div>
+                    <h4 class="font-bold text-xs sm:text-sm text-slate-900 dark:text-white tenant-name">BPJS Kesehatan & BPJS TK</h4>
+                    <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-1 line-clamp-2">Pendaftaran Peserta, Perubahan Data, Informasi JKN-KIS & Jamsostek.</p>
+                    <button onclick="selectKeperluanAndGo('BPJS Kesehatan')" class="mt-3 w-full py-1.5 px-3 rounded-lg bg-sky-50 dark:bg-sky-950/70 hover:bg-sky-100 dark:hover:bg-sky-900 text-sky-800 dark:text-sky-300 font-bold text-[11px] flex items-center justify-center gap-1 transition-colors cursor-pointer">
+                        <span>Pilih Layanan Ini</span> &rarr;
+                    </button>
+                </div>
+
+                <div class="tenant-item p-4 rounded-2xl bg-white dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-md transition-all">
+                    <div class="flex items-start justify-between gap-2 mb-2">
+                        <span class="w-8 h-8 rounded-xl bg-sky-100 dark:bg-sky-950 text-sky-700 dark:text-sky-300 flex items-center justify-center font-bold text-xs shrink-0">08</span>
+                        <span class="text-[10px] font-bold uppercase tracking-wider text-amber-600 bg-amber-50 dark:bg-amber-950/60 px-2 py-0.5 rounded">BUMD</span>
+                    </div>
+                    <h4 class="font-bold text-xs sm:text-sm text-slate-900 dark:text-white tenant-name">Perumdam Tirta Kencana</h4>
+                    <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-1 line-clamp-2">Pembayaran Tagihan Air PDAM, Pasang Baru & Pengaduan Pelanggan.</p>
+                    <button onclick="selectKeperluanAndGo('Perumdam Tirta Kencana (PDAM)')" class="mt-3 w-full py-1.5 px-3 rounded-lg bg-sky-50 dark:bg-sky-950/70 hover:bg-sky-100 dark:hover:bg-sky-900 text-sky-800 dark:text-sky-300 font-bold text-[11px] flex items-center justify-center gap-1 transition-colors cursor-pointer">
+                        <span>Pilih Layanan Ini</span> &rarr;
+                    </button>
+                </div>
+
+                <div class="tenant-item p-4 rounded-2xl bg-white dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-md transition-all">
+                    <div class="flex items-start justify-between gap-2 mb-2">
+                        <span class="w-8 h-8 rounded-xl bg-sky-100 dark:bg-sky-950 text-sky-700 dark:text-sky-300 flex items-center justify-center font-bold text-xs shrink-0">09</span>
+                        <span class="text-[10px] font-bold uppercase tracking-wider text-amber-600 bg-amber-50 dark:bg-amber-950/60 px-2 py-0.5 rounded">BUMN/BUMD</span>
+                    </div>
+                    <h4 class="font-bold text-xs sm:text-sm text-slate-900 dark:text-white tenant-name">Bank Kaltimtara & PT Pos</h4>
+                    <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-1 line-clamp-2">Loket Pembayaran Retribusi, Perbankan, Materai & Pengiriman Dokumen.</p>
+                    <button onclick="selectKeperluanAndGo('PT Bank Kaltimtara')" class="mt-3 w-full py-1.5 px-3 rounded-lg bg-sky-50 dark:bg-sky-950/70 hover:bg-sky-100 dark:hover:bg-sky-900 text-sky-800 dark:text-sky-300 font-bold text-[11px] flex items-center justify-center gap-1 transition-colors cursor-pointer">
+                        <span>Pilih Layanan Ini</span> &rarr;
+                    </button>
+                </div>
+
+                <div class="tenant-item p-4 rounded-2xl bg-white dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-md transition-all">
+                    <div class="flex items-start justify-between gap-2 mb-2">
+                        <span class="w-8 h-8 rounded-xl bg-sky-100 dark:bg-sky-950 text-sky-700 dark:text-sky-300 flex items-center justify-center font-bold text-xs shrink-0">10</span>
+                        <span class="text-[10px] font-bold uppercase tracking-wider text-indigo-600 bg-indigo-50 dark:bg-indigo-950/60 px-2 py-0.5 rounded">Lembaga</span>
+                    </div>
+                    <h4 class="font-bold text-xs sm:text-sm text-slate-900 dark:text-white tenant-name">BPOM di Samarinda</h4>
+                    <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-1 line-clamp-2">Konsultasi Izin Edar Obat & Makanan, Sertifikasi UMKM Pangan.</p>
+                    <button onclick="selectKeperluanAndGo('BPOM di Samarinda')" class="mt-3 w-full py-1.5 px-3 rounded-lg bg-sky-50 dark:bg-sky-950/70 hover:bg-sky-100 dark:hover:bg-sky-900 text-sky-800 dark:text-sky-300 font-bold text-[11px] flex items-center justify-center gap-1 transition-colors cursor-pointer">
+                        <span>Pilih Layanan Ini</span> &rarr;
+                    </button>
+                </div>
+
+                <div class="tenant-item p-4 rounded-2xl bg-white dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-md transition-all">
+                    <div class="flex items-start justify-between gap-2 mb-2">
+                        <span class="w-8 h-8 rounded-xl bg-sky-100 dark:bg-sky-950 text-sky-700 dark:text-sky-300 flex items-center justify-center font-bold text-xs shrink-0">11</span>
+                        <span class="text-[10px] font-bold uppercase tracking-wider text-emerald-600 bg-emerald-50 dark:bg-emerald-950/60 px-2 py-0.5 rounded">Pemkot</span>
+                    </div>
+                    <h4 class="font-bold text-xs sm:text-sm text-slate-900 dark:text-white tenant-name">Dinas Lingkungan Hidup & Disperkim</h4>
+                    <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-1 line-clamp-2">Konsultasi Dokumen Lingkungan (AMDAL/UKL-UPL) & Perumahan.</p>
+                    <button onclick="selectKeperluanAndGo('Dinas Lingkungan Hidup (DLH)')" class="mt-3 w-full py-1.5 px-3 rounded-lg bg-sky-50 dark:bg-sky-950/70 hover:bg-sky-100 dark:hover:bg-sky-900 text-sky-800 dark:text-sky-300 font-bold text-[11px] flex items-center justify-center gap-1 transition-colors cursor-pointer">
+                        <span>Pilih Layanan Ini</span> &rarr;
+                    </button>
+                </div>
+
+                <div class="tenant-item p-4 rounded-2xl bg-white dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-md transition-all">
+                    <div class="flex items-start justify-between gap-2 mb-2">
+                        <span class="w-8 h-8 rounded-xl bg-sky-100 dark:bg-sky-950 text-sky-700 dark:text-sky-300 flex items-center justify-center font-bold text-xs shrink-0">12</span>
+                        <span class="text-[10px] font-bold uppercase tracking-wider text-emerald-600 bg-emerald-50 dark:bg-emerald-950/60 px-2 py-0.5 rounded">Pemkot</span>
+                    </div>
+                    <h4 class="font-bold text-xs sm:text-sm text-slate-900 dark:text-white tenant-name">Dinas Koperasi & Perdagangan</h4>
+                    <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-1 line-clamp-2">Pembinaan Usaha Mikro, Tera Ulang, Pendampingan UMKM Kota Samarinda.</p>
+                    <button onclick="selectKeperluanAndGo('Dinas Koperasi, UKM & Perindustrian')" class="mt-3 w-full py-1.5 px-3 rounded-lg bg-sky-50 dark:bg-sky-950/70 hover:bg-sky-100 dark:hover:bg-sky-900 text-sky-800 dark:text-sky-300 font-bold text-[11px] flex items-center justify-center gap-1 transition-colors cursor-pointer">
+                        <span>Pilih Layanan Ini</span> &rarr;
+                    </button>
+                </div>
+
+            </div>
+        </section>
+
+
+        <!-- ================================================================= -->
+        <!-- TAB SECTION 3: JAM OPERASIONAL & LOKASI                          -->
+        <!-- ================================================================= -->
+        <section id="viewInfoJadwal" class="hidden glass-panel rounded-3xl border border-slate-200/80 dark:border-slate-800/80 shadow-2xl p-5 sm:p-8 transition-all space-y-6">
+            
+            <div>
+                <h2 class="text-xl font-extrabold text-slate-900 dark:text-white flex items-center gap-2">
+                    <i class="fa-solid fa-clock text-sky-600"></i>
+                    <span>Jam Operasional & Alamat Gedung MPP Samarinda</span>
+                </h2>
+                <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+                    Pastikan Anda memperhatikan jadwal layanan sebelum melakukan kunjungan tatap muka.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                
+                <!-- Schedule Box -->
+                <div class="p-5 rounded-2xl bg-white dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800 space-y-3">
+                    <h3 class="text-sm font-extrabold text-sky-900 dark:text-sky-300 uppercase tracking-wider flex items-center gap-2">
+                        <i class="fa-solid fa-calendar-days text-amber-500"></i>
+                        <span>Jadwal Pelayanan Loket</span>
+                    </h3>
+                    
+                    <ul class="space-y-2 text-xs font-medium">
+                        <li class="flex justify-between py-2 border-b border-slate-100 dark:border-slate-800">
+                            <span class="text-slate-600 dark:text-slate-400">Senin - Kamis</span>
+                            <span class="font-bold text-slate-900 dark:text-white">08.00 - 15.00 WITA</span>
+                        </li>
+                        <li class="flex justify-between py-2 border-b border-slate-100 dark:border-slate-800">
+                            <span class="text-slate-600 dark:text-slate-400">Jumat</span>
+                            <span class="font-bold text-slate-900 dark:text-white">08.00 - 11.30 WITA</span>
+                        </li>
+                        <li class="flex justify-between py-2 text-rose-500 font-semibold">
+                            <span>Sabtu, Minggu & Hari Libur Nasional</span>
+                            <span>TUTUP</span>
+                        </li>
+                    </ul>
+
+                    <div class="p-3 rounded-xl bg-sky-50 dark:bg-sky-950/60 text-[11px] text-sky-800 dark:text-sky-300 font-semibold flex items-start gap-2 border border-sky-200 dark:border-sky-800">
+                        <i class="fa-solid fa-circle-info mt-0.5"></i>
+                        <span>Pengambilan nomor antrean fisik dilayani sampai 30 menit sebelum jam operasional berakhir.</span>
+                    </div>
+                </div>
+
+                <!-- Location Box -->
+                <div class="p-5 rounded-2xl bg-white dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800 space-y-3">
+                    <h3 class="text-sm font-extrabold text-sky-900 dark:text-sky-300 uppercase tracking-wider flex items-center gap-2">
+                        <i class="fa-solid fa-location-dot text-rose-500"></i>
+                        <span>Lokasi Gedung MPP</span>
+                    </h3>
+                    <p class="text-xs text-slate-700 dark:text-slate-300 leading-relaxed font-medium">
+                        <strong>Gedung Mal Pelayanan Publik Kota Samarinda</strong><br>
+                        Jl. Pahlawan No.01, Kel. Dadi Mulya, Kec. Samarinda Ulu,<br>
+                        Kota Samarinda, Kalimantan Timur 75242.
+                    </p>
+                    
+                    <a href="https://maps.google.com/?q=Mal+Pelayanan+Publik+Kota+Samarinda" target="_blank" class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-sky-900 text-amber-400 text-xs font-extrabold hover:bg-sky-800 transition-colors shadow-md">
+                        <i class="fa-solid fa-map-location-dot"></i>
+                        <span>Petunjuk Arah Google Maps</span>
+                    </a>
+                </div>
+
+            </div>
+        </section>
+
+    </main>
+
+    <!-- SUCCESS MODAL DIALOG -->
+    <div id="successModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4 z-50 opacity-0 pointer-events-none transition-opacity duration-300">
+        <div class="bg-white dark:bg-slate-900 rounded-3xl p-6 sm:p-8 max-w-md w-full text-center shadow-2xl border-2 border-amber-500/40 transform scale-95 transition-transform duration-300" id="successCard">
+            
+            <div class="w-20 h-20 bg-gradient-to-tr from-emerald-600 to-teal-500 text-white rounded-3xl flex items-center justify-center mx-auto mb-4 text-3xl shadow-xl shadow-emerald-600/20 border-2 border-white">
+                <i class="fa-solid fa-check-double"></i>
+            </div>
+            
+            <span class="text-[10px] font-extrabold tracking-widest text-emerald-600 dark:text-emerald-400 uppercase bg-emerald-500/10 px-3 py-1 rounded-full border border-emerald-500/20">
+                Presensi Terisi
+            </span>
+
+            <h3 class="text-xl font-extrabold text-slate-900 dark:text-white mt-3 mb-2">
+                Terima Kasih!
+            </h3>
+            <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-300 mb-6 leading-relaxed">
+                Data kunjungan Anda telah berhasil tersimpan ke dalam database Mal Pelayanan Publik (MPP) Kota Samarinda.
+            </p>
+            
+            <button id="closeSuccessBtn" class="w-full py-3.5 bg-gradient-to-r from-sky-900 to-indigo-900 text-amber-400 font-extrabold rounded-xl shadow-lg border border-amber-500/40 transition-all active:scale-95 text-xs sm:text-sm uppercase tracking-wide cursor-pointer">
+                Kembali ke Formulir
+            </button>
+            
+            <p id="countdownText" class="text-xs text-amber-600 dark:text-amber-400 font-semibold mt-3 flex items-center justify-center gap-1.5">
+                <i class="fa-solid fa-rotate text-xs animate-spin"></i>
+                Otomatis kembali dalam <span id="countdownSec" class="font-extrabold text-sm underline">7</span> detik...
+            </p>
+        </div>
+    </div>
+
+    <!-- TOAST CONTAINER -->
+    <div id="toastContainer" class="fixed bottom-5 right-5 z-50 flex flex-col gap-2 max-w-sm w-full pointer-events-none"></div>
+
+    <!-- FOOTER -->
+    <footer class="mt-8 text-center text-xs text-slate-400 dark:text-slate-500 font-medium space-y-1">
+        <p>&copy; 2026 Mal Pelayanan Publik (MPP) &bull; Pemerintah Kota Samarinda</p>
+        <p class="text-[10px]">DPMPTSP Samarinda &bull; Terintegrasi Google Form API</p>
+    </footer>
+
+
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+        window.submitted = false;
+
+        // Toast Notification Helper
+        function showToast(message, type = 'info') {
+            const container = document.getElementById('toastContainer');
+            if (!container) return;
+
+            const toast = document.createElement('div');
+            toast.className = `toast-enter pointer-events-auto flex items-center gap-3 p-4 rounded-2xl shadow-xl text-xs font-semibold border ${
+                type === 'error' 
+                    ? 'bg-rose-950/90 text-rose-200 border-rose-800/80 backdrop-blur-md' 
+                    : type === 'success' 
+                    ? 'bg-emerald-950/90 text-emerald-200 border-emerald-800/80 backdrop-blur-md' 
+                    : 'bg-slate-900/90 text-white border-slate-700/80 backdrop-blur-md'
+            }`;
+
+            const iconClass = type === 'error' ? 'fa-circle-exclamation text-rose-400' : type === 'success' ? 'fa-circle-check text-emerald-400' : 'fa-circle-info text-sky-400';
+            
+            toast.innerHTML = `
+                <i class="fa-solid ${iconClass} text-base shrink-0"></i>
+                <div class="flex-1 leading-snug">${message}</div>
+                <button class="text-slate-400 hover:text-white text-sm ml-2 shrink-0">&times;</button>
+            `;
+
+            toast.querySelector('button').addEventListener('click', () => {
+                toast.classList.remove('toast-enter');
+                toast.classList.add('toast-exit');
+                setTimeout(() => toast.remove(), 300);
+            });
+
+            container.appendChild(toast);
+
+            setTimeout(() => {
+                if (toast.parentNode) {
+                    toast.classList.remove('toast-enter');
+                    toast.classList.add('toast-exit');
+                    setTimeout(() => toast.remove(), 300);
+                }
+            }, 4000);
+        }
+
+        // Tab Navigation Switcher
+        function switchTab(tabId) {
+            document.querySelectorAll('main > section').forEach(sec => sec.classList.add('hidden'));
+            document.querySelectorAll('.nav-tab').forEach(btn => {
+                btn.classList.remove('bg-sky-900', 'text-amber-400', 'shadow-md');
+                btn.classList.add('text-slate-600', 'dark:text-slate-400');
+            });
+
+            if (tabId === 'buku-tamu') {
+                document.getElementById('viewBukuTamu').classList.remove('hidden');
+                document.getElementById('tabBukuTamu').classList.add('bg-sky-900', 'text-amber-400', 'shadow-md');
+            } else if (tabId === 'katalog-tenan') {
+                document.getElementById('viewKatalogTenan').classList.remove('hidden');
+                document.getElementById('tabKatalogTenan').classList.add('bg-sky-900', 'text-amber-400', 'shadow-md');
+            } else if (tabId === 'info-jadwal') {
+                document.getElementById('viewInfoJadwal').classList.remove('hidden');
+                document.getElementById('tabInfoJadwal').classList.add('bg-sky-900', 'text-amber-400', 'shadow-md');
+            }
+        }
+
+        // Quick Age Preset helper
+        function setAgePreset(val) {
+            const slider = document.getElementById('usiaSlider');
+            if (slider) {
+                slider.value = val;
+                slider.dispatchEvent(new Event('input'));
+            }
+        }
+
+        // Quick Select Service from Directory
+        function selectKeperluanAndGo(keperluanVal) {
+            const selectEl = document.getElementById('keperluanInput');
+            if (selectEl) {
+                selectEl.value = keperluanVal;
+            }
+            switchTab('buku-tamu');
+            showToast(`Layanan [${keperluanVal}] telah dipilih pada formulir.`, 'info');
+        }
+
+        // Filter Tenant Directory Search
+        function filterTenan() {
+            const q = document.getElementById('searchTenan').value.toLowerCase();
+            const items = document.querySelectorAll('.tenant-item');
+            items.forEach(item => {
+                const text = item.textContent.toLowerCase();
+                if (text.includes(q)) {
+                    item.style.display = 'block';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const googleForm = document.getElementById('googleForm');
+            const hiddenIframe = document.getElementById('hidden_iframe');
+            const submitBtn = document.getElementById('submitBtn');
+            const usiaSlider = document.getElementById('usiaSlider');
+            const usiaBadge = document.getElementById('usiaBadge');
+            const usiaHiddenInput = document.getElementById('usiaHiddenInput');
+            const jkInput = document.getElementById('jkInput');
+            const jkBtns = document.querySelectorAll('.jk-btn');
+            const jumlahOrangInput = document.getElementById('jumlahOrangInput');
+            const pillBtns = document.querySelectorAll('.pill-btn');
+            
+            const themeToggleBtn = document.getElementById('themeToggleBtn');
+            const themeIcon = document.getElementById('themeIcon');
+            const htmlTag = document.documentElement;
+
+            const successModal = document.getElementById('successModal');
+            const successCard = document.getElementById('successCard');
+            const closeSuccessBtn = document.getElementById('closeSuccessBtn');
+            const countdownSec = document.getElementById('countdownSec');
+            let autoResetTimer = null;
+            let countdownInterval = null;
+
+            // WITA Clock Generator
+            function updateClock() {
+                const clockEl = document.getElementById('liveClock');
+                if (!clockEl) return;
+                const now = new Date();
+                const timeString = now.toLocaleTimeString('id-ID', { hour12: false });
+                clockEl.textContent = `${timeString} WITA`;
+            }
+            setInterval(updateClock, 1000);
+            updateClock();
+
+            // Theme Switcher
+            themeToggleBtn.addEventListener('click', function() {
+                if (htmlTag.classList.contains('dark')) {
+                    htmlTag.classList.remove('dark');
+                    htmlTag.classList.add('light');
+                    themeIcon.className = 'fa-solid fa-moon text-amber-500';
+                } else {
+                    htmlTag.classList.remove('light');
+                    htmlTag.classList.add('dark');
+                    themeIcon.className = 'fa-solid fa-sun text-amber-400';
+                }
+                updateSliderProgress(usiaSlider.value);
+            });
+
+            // Usia Slider Dynamic Gradient
+            function updateSliderProgress(val) {
+                const min = usiaSlider.min || 15;
+                const max = usiaSlider.max || 80;
+                const percentage = ((val - min) / (max - min)) * 100;
+                const isDark = htmlTag.classList.contains('dark');
+                usiaSlider.style.background = `linear-gradient(to right, #0284c7 0%, #0284c7 ${percentage}%, ${isDark ? '#334155' : '#cbd5e1'} ${percentage}%, ${isDark ? '#334155' : '#cbd5e1'} 100%)`;
+                usiaBadge.textContent = val;
+                usiaHiddenInput.value = val;
+            }
+
+            usiaSlider.addEventListener('input', function(e) {
+                updateSliderProgress(e.target.value);
+            });
+
+            updateSliderProgress(25);
+
+            // Gender Selector
+            jkBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    jkBtns.forEach(b => {
+                        b.classList.remove('active', 'border-2', 'border-sky-800', 'bg-sky-50', 'dark:bg-sky-950/80', 'text-sky-900', 'dark:text-sky-300', 'font-bold');
+                        b.classList.add('border', 'border-slate-300', 'dark:border-slate-700', 'bg-white', 'dark:bg-slate-900', 'text-slate-600', 'dark:text-slate-400', 'font-medium');
+                    });
+                    this.classList.add('active', 'border-2', 'border-sky-800', 'bg-sky-50', 'dark:bg-sky-950/80', 'text-sky-900', 'dark:text-sky-300', 'font-bold');
+                    this.classList.remove('border', 'border-slate-300', 'dark:border-slate-700', 'bg-white', 'dark:bg-slate-900', 'text-slate-600', 'dark:text-slate-400', 'font-medium');
+
+                    jkInput.value = this.getAttribute('data-value');
+                });
+            });
+
+            // Group Member Pills
+            pillBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    pillBtns.forEach(b => {
+                        b.classList.remove('active', 'border-2', 'border-sky-800', 'bg-sky-50', 'dark:bg-sky-950/80', 'text-sky-900', 'dark:text-sky-300', 'font-bold');
+                        b.classList.add('border', 'border-slate-300', 'dark:border-slate-700', 'bg-white', 'dark:bg-slate-900', 'text-slate-600', 'dark:text-slate-400', 'font-medium');
+                    });
+
+                    this.classList.add('active', 'border-2', 'border-sky-800', 'bg-sky-50', 'dark:bg-sky-950/80', 'text-sky-900', 'dark:text-sky-300', 'font-bold');
+                    this.classList.remove('border', 'border-slate-300', 'dark:border-slate-700', 'bg-white', 'dark:bg-slate-900', 'text-slate-600', 'dark:text-slate-400', 'font-medium');
+
+                    jumlahOrangInput.value = this.getAttribute('data-value');
+                });
+            });
+
+            // Form Submit Logic
+            googleForm.addEventListener('submit', function() {
+                window.submitted = true;
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = `
+                    <i class="fa-solid fa-circle-notch animate-spin text-lg text-amber-400"></i>
+                    <span>MENYIMPAN DATA PRESENSI...</span>
+                `;
+            });
+
+            if (hiddenIframe) {
+                hiddenIframe.addEventListener('load', function() {
+                    if (window.submitted) {
+                        handleFormSuccess();
+                    }
+                });
+            }
+
+            function handleFormSuccess() {
+                if(!window.submitted) return;
+
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = `
+                    <i class="fa-solid fa-paper-plane text-amber-400"></i>
+                    <span>KIRIM DATA PRESENSI</span>
+                    <i class="fa-solid fa-arrow-right text-xs text-amber-400"></i>
+                `;
+
+                successModal.classList.remove('opacity-0', 'pointer-events-none');
+                successModal.classList.add('opacity-100');
+                successCard.classList.remove('scale-95');
+                successCard.classList.add('scale-100');
+
+                let timeLeft = 7;
+                if (countdownSec) countdownSec.textContent = timeLeft;
+
+                if (countdownInterval) clearInterval(countdownInterval);
+                countdownInterval = setInterval(() => {
+                    timeLeft--;
+                    if (countdownSec) countdownSec.textContent = Math.max(0, timeLeft);
+                    if (timeLeft <= 0) clearInterval(countdownInterval);
+                }, 1000);
+
+                if (autoResetTimer) clearTimeout(autoResetTimer);
+                autoResetTimer = setTimeout(() => {
+                    resetAndReturnToForm();
+                }, 7000);
+            }
+
+            function resetAndReturnToForm() {
+                if (autoResetTimer) clearTimeout(autoResetTimer);
+                if (countdownInterval) clearInterval(countdownInterval);
+
+                successModal.classList.remove('opacity-100');
+                successModal.classList.add('opacity-0', 'pointer-events-none');
+                successCard.classList.remove('scale-100');
+                successCard.classList.add('scale-95');
+                
+                googleForm.reset();
+                window.submitted = false;
+                updateSliderProgress(25);
+                
+                if (pillBtns.length > 0) pillBtns[0].click();
+                if (jkBtns.length > 0) jkBtns[0].click();
+
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+                showToast('Formulir presensi siap untuk pengunjung berikutnya.', 'success');
+            }
+
+            closeSuccessBtn.addEventListener('click', function() {
+                resetAndReturnToForm();
+            });
+        });
+    </script>
+</body>
+</html>
